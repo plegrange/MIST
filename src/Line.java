@@ -10,4 +10,8 @@ public class Line {
     public void initializeLine(Ledger initialStateLedger) {
         endStation.setupInitialState(initialStateLedger);
     }
+
+    public Ledger doTimeStep() {
+        return endStation.doTimeStep(new Ledger());
+    }
 }

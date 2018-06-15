@@ -10,8 +10,8 @@ public class Ledger {
         entries = new ArrayList<>();
     }
 
-    public void addEntry(String stationID, String status, double upChance, double bufferLevel, double cycleTime) {
-        entries.add(new Pair<>(stationID, new Entry(status, upChance, bufferLevel, cycleTime)));
+    public void addEntry(String stationID, String status, double upChance, int bufferLevel, int bufferCapacity, double cycleTime, double meanRepairTime, double timeStep) {
+        entries.add(new Pair<>(stationID, new Entry(status, upChance, bufferLevel, bufferCapacity, cycleTime, meanRepairTime, timeStep)));
     }
 
     public void addEntry(String stationID, Entry entry) {
