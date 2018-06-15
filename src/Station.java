@@ -1,7 +1,3 @@
-package Simulator;
-
-import org.omg.CORBA.portable.IDLEntity;
-
 import java.util.List;
 
 public class Station {
@@ -24,12 +20,16 @@ public class Station {
         }
     }
 
-    public void setupInitialState(String status, double upChance, double bufferLevel, double cycleTime) {
-        this.status = status;
-        this.upChance = upChance;
-        this.bufferLevel = bufferLevel;
+    public void setupInitialState(Ledger ledger) {
+        Entry entry = ledger.getEntry(ID);
+        this.status = entry.status;
+        this.upChance = entry.upChance;
+        this.bufferLevel = entry.bufferLevel;
         this.localTimeStep = 0;
-        this.cycleTime = cycleTime;
+        this.cycleTime = entry.cycleTime;
+        for (Station s : previousStations) {
+            s.setupInitialState(ledger);
+        }
     }
 
 }

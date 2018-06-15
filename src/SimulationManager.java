@@ -1,13 +1,10 @@
-package Simulator;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class SimulationManager {
     private Line line;
+    private Ledger stateLedger;
 
-    public SimulationManager() {
-
+    public SimulationManager(Ledger initialStateLedger) {
+        createLine();
+        line.initializeLine(initialStateLedger);
     }
 
     public void createLine() {
