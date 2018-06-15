@@ -18,6 +18,10 @@ public class Ledger {
         entries.add(new Pair<>(stationID, entry));
     }
 
+    public List<Pair<String, Entry>> getEntries(){
+        return entries;
+    }
+
     public Entry getEntry(String stationID) {
         for (Pair pair : entries) {
             if (pair.getKey().equals(stationID))
@@ -25,6 +29,4 @@ public class Ledger {
         }
         return null;
     }
-
-
 }

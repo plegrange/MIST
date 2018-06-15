@@ -1,16 +1,37 @@
+import javafx.util.Pair;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class SimulationManager {
     private Line line;
     private Ledger stateLedger;
     private double secondsToSim = 10000.0;
     private double timeIncrement = 1.0;
 
+    private List<Ledger> logBook;
+    private Ledger recordLedger;
+
     public SimulationManager(Ledger initialStateLedger) {
+        logBook = new ArrayList<>();
         createLine();
         line.initializeLine(initialStateLedger);
 
         for (int i = 0; i < secondsToSim; i += timeIncrement) {
             stateLedger = line.doTimeStep();
+            logBook.add(stateLedger);
         }
+        recordLedger = sortLogbook();
+    }
+
+    private Ledger sortLogbook() {
+        Ledger newLedger = new Ledger();
+        for (Ledger ledger : logBook) {
+            for (Pair<String, Entry> entryPair : ledger.getEntries()) {
+                newLedger.addEntry(entryPair.getKey(), entryPair.getValue());
+            }
+        }
+        return newLedger;
     }
 
     public void createLine() {
@@ -55,4 +76,7 @@ public class SimulationManager {
         line = new Line("Z2", MA21);
     }
 
+    public Ledger getRecordLedger() {
+        return recordLedger;
+    }
 }
