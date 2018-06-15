@@ -14,6 +14,7 @@ public class SimulationManager {
 
     public SimulationManager(Ledger initialStateLedger) {
         logBook = new ArrayList<>();
+        logBook.add(initialStateLedger);
         createLine();
         line.initializeLine(initialStateLedger);
 
