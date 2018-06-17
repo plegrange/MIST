@@ -12,6 +12,7 @@ public class Line {
     }
 
     public Ledger doTimeStep() {
+        endStation.bufferLevel--;
         return endStation.doTimeStep(new Ledger());
     }
 }

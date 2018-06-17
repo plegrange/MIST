@@ -95,12 +95,17 @@ public class Station {
     }
 
     private void idle() {
+        if (previousStations.size() == 0) {
+            status = "WORKING";
+            return;
+        }
         for (Station s : previousStations) {
             if (s.bufferLevel == 0) {
                 status = "STARVED";
                 return;
             }
         }
+
         for (Station s : previousStations) {
             s.bufferLevel--;
         }
@@ -114,7 +119,7 @@ public class Station {
             }
         }
         for (Station s : previousStations) {
-            bufferLevel--;
+            s.bufferLevel--;
         }
         status = "WORKING";
     }
