@@ -5,11 +5,10 @@ public class Station {
     private double timeIncrement;
     public final String ID;
     public String status;
-    public double upChance;
+    public double upChance, cycleTime, meanRepairTime;
     public int bufferLevel, bufferCapacity;
-    public double cycleTime, meanRepairTime;
-    public double globalTimeStep, downTime;
-    private double localTimeStep;
+    public double globalTimeStep;
+    private double timeInCurrentState;
     private List<Station> previousStations;
 
     public Station(String ID, double timeIncrement) {
@@ -26,11 +25,10 @@ public class Station {
 
     public void setupInitialState(Ledger ledger) {
         Entry entry = ledger.getEntry(ID);
-        localTimeStep = 0.0;
+        timeInCurrentState = 0.0;
         this.status = entry.status;
         this.upChance = entry.upChance;
         this.bufferLevel = entry.bufferLevel;
-        this.localTimeStep = 0.0;
         this.globalTimeStep = 0.0;
         this.cycleTime = entry.cycleTime;
         this.meanRepairTime = entry.meanRepairTime;
@@ -40,11 +38,11 @@ public class Station {
     }
 
     public Ledger doTimeStep(Ledger ledger) {
+        processStep();
+        ledger.addEntry(ID, status, upChance, bufferLevel, bufferCapacity, cycleTime, meanRepairTime, globalTimeStep);
         for (Station s : previousStations) {
             ledger = s.doTimeStep(ledger);
         }
-        processStep();
-        ledger.addEntry(ID, status, upChance, bufferLevel, bufferCapacity, cycleTime, meanRepairTime, globalTimeStep);
         return ledger;
     }
 
@@ -71,11 +69,12 @@ public class Station {
     }
 
     private void work() {
-        if (localTimeStep < cycleTime) {
+        if (timeInCurrentState < cycleTime) {
             if (Math.random() > upChance) {
                 status = "FAILED";
+                timeInCurrentState = 0.0;
             } else {
-                localTimeStep += timeIncrement;
+                timeInCurrentState += timeIncrement;
             }
             return;
         } else if (bufferLevel >= bufferCapacity)
@@ -84,24 +83,26 @@ public class Station {
             bufferLevel++;
             status = "IDLE";
         }
-        localTimeStep = 0.0;
+        timeInCurrentState = 0.0;
     }
 
     private void failed() {
-        if (downTime >= meanRepairTime) {
+        if (timeInCurrentState >= meanRepairTime) {
             status = "WORKING";
-            downTime = 0.0;
-        } else downTime += timeIncrement;
+            timeInCurrentState = 0.0;
+        } else timeInCurrentState += timeIncrement;
     }
 
     private void idle() {
         if (previousStations.size() == 0) {
             status = "WORKING";
+            timeInCurrentState = 0.0;
             return;
         }
         for (Station s : previousStations) {
             if (s.bufferLevel == 0) {
                 status = "STARVED";
+                timeInCurrentState = 0.0;
                 return;
             }
         }
@@ -110,11 +111,13 @@ public class Station {
             s.bufferLevel--;
         }
         status = "WORKING";
+        timeInCurrentState = 0.0;
     }
 
     private void starved() {
         for (Station s : previousStations) {
             if (s.bufferLevel == 0) {
+                timeInCurrentState += timeIncrement;
                 return;
             }
         }
@@ -122,11 +125,15 @@ public class Station {
             s.bufferLevel--;
         }
         status = "WORKING";
+        timeInCurrentState = 0.0;
     }
 
     private void blocked() {
         if (bufferLevel < bufferCapacity) {
             status = "WORKING";
+            timeInCurrentState = 0.0;
+        } else {
+            timeInCurrentState += timeIncrement;
         }
     }
 

@@ -9,37 +9,31 @@ public class SimulationManager {
     private double secondsToSim = 10000.0;
     private double timeIncrement = 1.0;
 
-    private List<Ledger> logBook;
-    private Ledger recordLedger;
 
-    public SimulationManager(Ledger initialStateLedger) {
-        logBook = new ArrayList<>();
-        logBook.add(initialStateLedger);
+    public SimulationManager() {
         createLine();
+    }
+
+    public List<Pair<Double, Ledger>> runSimulation(Ledger initialStateLedger) {
+        List<Pair<Double, Ledger>> logBook = new ArrayList<>();
+        logBook.add(new Pair<>(0.0, initialStateLedger));
         line.initializeLine(initialStateLedger);
-
-        for (int i = 0; i < secondsToSim; i += timeIncrement) {
+        for (int i = 1; i < secondsToSim; i += timeIncrement) {
             stateLedger = line.doTimeStep();
-            logBook.add(stateLedger);
+            logBook.add(new Pair<>(Double.valueOf(i), stateLedger));
         }
-        recordLedger = sortLogbook();
+        return logBook;
     }
 
-    private Ledger sortLogbook() {
-        Ledger newLedger = new Ledger();
-        for (Ledger ledger : logBook) {
-            for (Pair<String, Entry> entryPair : ledger.getEntries()) {
-                newLedger.addEntry(entryPair.getKey(), entryPair.getValue());
-            }
-        }
-        return newLedger;
-    }
 
     public void createLine() {
-        Station MA21 = new Station("MA21", timeIncrement);
+        Station MA213 = new Station("MA213", timeIncrement);
+
+        Station MA212 = new Station("MA212", timeIncrement);
+        MA213.setPreviousStations(MA212);
 
         Station AS23 = new Station("AS23", timeIncrement);
-        MA21.setPreviousStations(AS23);
+        MA212.setPreviousStations(AS23);
 
         Station AS22 = new Station("AS22", timeIncrement);
         AS23.setPreviousStations(AS22);
@@ -47,20 +41,35 @@ public class SimulationManager {
         Station AS21 = new Station("AS21", timeIncrement);
         AS22.setPreviousStations(AS21);
 
-        Station UB23 = new Station("UB23", timeIncrement);
-        AS21.setPreviousStations();
+        Station UB233 = new Station("UB233", timeIncrement);
+        AS21.setPreviousStations(UB233);
 
-        Station UB21 = new Station("UB21", timeIncrement);
-        UB23.setPreviousStations(UB21);
+        Station UB232 = new Station("UB232", timeIncrement);
+        UB233.setPreviousStations(UB232);
 
-        Station HC25 = new Station("HC25", timeIncrement);
-        UB21.setPreviousStations(HC25);
+        Station UB231 = new Station("UB231", timeIncrement);
+        UB232.setPreviousStations(UB231);
 
-        Station HC24 = new Station("HC24", timeIncrement);
-        HC25.setPreviousStations(HC24);
+        Station UB213 = new Station("UB213", timeIncrement);
+        UB231.setPreviousStations(UB213);
+
+        Station UB212 = new Station("UB212", timeIncrement);
+        UB213.setPreviousStations(UB212);
+
+        Station HC252 = new Station("HC252", timeIncrement);
+        UB212.setPreviousStations(HC252);
+
+        Station HC251 = new Station("HC251", timeIncrement);
+        HC252.setPreviousStations(HC251);
+
+        Station HC242 = new Station("HC242", timeIncrement);
+        HC251.setPreviousStations(HC242);
+
+        Station HC241 = new Station("HC241", timeIncrement);
+        HC242.setPreviousStations(HC241);
 
         Station HC23 = new Station("HC23", timeIncrement);
-        HC24.setPreviousStations(HC23);
+        HC241.setPreviousStations(HC23);
 
         Station HC22 = new Station("HC22", timeIncrement);
         HC23.setPreviousStations(HC22);
@@ -74,10 +83,6 @@ public class SimulationManager {
         Station HU21 = new Station("HU21", timeIncrement);
         HU22.setPreviousStations(HU21);
 
-        line = new Line("Z2", MA21);
-    }
-
-    public Ledger getRecordLedger() {
-        return recordLedger;
+        line = new Line("Z2", MA213);
     }
 }
