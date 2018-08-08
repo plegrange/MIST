@@ -5,13 +5,35 @@ import java.util.List;
 
 public class Ledger {
     private List<Pair<String, Entry>> entries;
+    private double error;
 
     public Ledger() {
         entries = new ArrayList<>();
     }
 
-    public void addEntry(String stationID, String status, double upChance, int bufferLevel, int bufferCapacity, double cycleTime, double meanRepairTime, double timeStep) {
+    public void addEntry(String stationID, String status, double upChance, int bufferLevel, int bufferCapacity, double cycleTime, double meanRepairTime, int timeStep) {
         entries.add(new Pair<>(stationID, new Entry(status, upChance, bufferLevel, bufferCapacity, cycleTime, meanRepairTime, timeStep)));
+    }
+
+    public double getError(Ledger other) {
+        //int totalErrors = 0;
+        double totalDeviation = 0.0;
+        for (Pair<String, Entry> pair : other.entries) {
+            Entry currentEntry = getEntry(pair.getKey());
+            if (currentEntry.status != pair.getValue().status) {
+                totalDeviation += 10.0;
+                //      totalErrors++;
+            }
+            if (currentEntry.bufferLevel != pair.getValue().bufferLevel) {
+                totalDeviation += Math.abs(currentEntry.bufferLevel - pair.getValue().bufferLevel);
+                //    totalErrors++;
+            }
+            if (currentEntry.bufferLevel != pair.getValue().bufferLevel) {
+                totalDeviation += Math.abs(currentEntry.bufferLevel - pair.getValue().bufferLevel);
+                //  totalErrors++;
+            }
+        }
+        return totalDeviation;
     }
 
     public void addEntry(String stationID, Entry entry) {
@@ -40,7 +62,7 @@ public class Ledger {
                     , entry.getValue().bufferCapacity
                     , entry.getValue().cycleTime
                     , createRandomNumber(300.0, 1500.0)
-                    , 0.0);
+                    , 0);
         }
         return newLedger;
     }
@@ -49,14 +71,14 @@ public class Ledger {
         return min + Math.random() * (max - min);
     }
 
-    public Ledger createTrialVectorLedger(Ledger b, Ledger c, double scalingFactor) {
+    public Ledger createTrialVectorLedger(Ledger a, Ledger b, double scalingFactor) {
         Ledger newLedger = new Ledger();
         for (Pair<String, Entry> entry : entries) {
             Entry value = entry.getValue();
             newLedger.addEntry(entry.getKey(), value.status
-                    , value.upChance + scalingFactor * (b.getEntry(entry.getKey()).upChance - c.getEntry(entry.getKey()).upChance)
+                    , value.upChance + scalingFactor * (a.getEntry(entry.getKey()).upChance - b.getEntry(entry.getKey()).upChance)
                     , value.bufferLevel, value.bufferCapacity, value.cycleTime
-                    , value.meanRepairTime + scalingFactor * (b.getEntry(entry.getKey()).meanRepairTime - c.getEntry(entry.getKey()).meanRepairTime)
+                    , value.meanRepairTime + scalingFactor * (a.getEntry(entry.getKey()).meanRepairTime - b.getEntry(entry.getKey()).meanRepairTime)
                     , value.timeStep
             );
         }
@@ -87,5 +109,13 @@ public class Ledger {
                     , entry.getValue().timeStep);
         }
         return newLedger;
+    }
+
+    public double getError() {
+        return error;
+    }
+
+    public void setError(double error) {
+        this.error = error;
     }
 }

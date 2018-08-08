@@ -1,4 +1,5 @@
 import javafx.util.Pair;
+import sun.rmi.runtime.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,18 +10,17 @@ public class SimulationManager {
     private double secondsToSim = 10000.0;
     private double timeIncrement = 1.0;
 
-
     public SimulationManager() {
         createLine();
     }
 
-    public List<Pair<Double, Ledger>> runSimulation(Ledger initialStateLedger) {
-        List<Pair<Double, Ledger>> logBook = new ArrayList<>();
-        logBook.add(new Pair<>(0.0, initialStateLedger));
+    public Logbook runSimulation(Ledger initialStateLedger) {
+        Logbook logBook = new Logbook(initialStateLedger);
+        //logBook.addLedger(0, initialStateLedger);
         line.initializeLine(initialStateLedger);
         for (int i = 1; i < secondsToSim; i += timeIncrement) {
             stateLedger = line.doTimeStep();
-            logBook.add(new Pair<>(Double.valueOf(i), stateLedger));
+            logBook.addLedger(i, stateLedger);
         }
         return logBook;
     }

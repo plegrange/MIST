@@ -3,9 +3,9 @@ public class Entry {
     public double upChance;
     public int bufferLevel, bufferCapacity;
     public double cycleTime, meanRepairTime;
-    public double timeStep;
+    public int timeStep;
 
-    public Entry(String status, double upChance, int bufferLevel, int bufferCapacity, double cycleTime, double meanRepairTime, double timeStep) {
+    public Entry(String status, double upChance, int bufferLevel, int bufferCapacity, double cycleTime, double meanRepairTime, int timeStep) {
         this.status = status;
         this.upChance = upChance;
         this.bufferLevel = bufferLevel;
