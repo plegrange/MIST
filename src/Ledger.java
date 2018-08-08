@@ -12,7 +12,11 @@ public class Ledger {
     }
 
     public void addEntry(String stationID, String status, double upChance, int bufferLevel, int bufferCapacity, double cycleTime, double meanRepairTime, int timeStep) {
-        entries.add(new Pair<>(stationID, new Entry(status, upChance, bufferLevel, bufferCapacity, cycleTime, meanRepairTime, timeStep)));
+        entries.add(new Pair<>(stationID, new Entry(stationID,status, upChance, bufferLevel, bufferCapacity, cycleTime, meanRepairTime, timeStep)));
+    }
+
+    public int getTimestep(){
+        return entries.get(0).getValue().timeStep;
     }
 
     public double getError(Ledger other) {
@@ -20,17 +24,13 @@ public class Ledger {
         double totalDeviation = 0.0;
         for (Pair<String, Entry> pair : other.entries) {
             Entry currentEntry = getEntry(pair.getKey());
-            if (currentEntry.status != pair.getValue().status) {
+            if (!currentEntry.status.equals(pair.getValue().status)) {
                 totalDeviation += 10.0;
                 //      totalErrors++;
             }
             if (currentEntry.bufferLevel != pair.getValue().bufferLevel) {
                 totalDeviation += Math.abs(currentEntry.bufferLevel - pair.getValue().bufferLevel);
                 //    totalErrors++;
-            }
-            if (currentEntry.bufferLevel != pair.getValue().bufferLevel) {
-                totalDeviation += Math.abs(currentEntry.bufferLevel - pair.getValue().bufferLevel);
-                //  totalErrors++;
             }
         }
         return totalDeviation;

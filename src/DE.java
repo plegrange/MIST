@@ -39,7 +39,7 @@ public class DE {
     private void selectNewPop(List<Pair<Ledger, Ledger>> bothPops) {
         population = new ArrayList<>();
         for (Pair<Ledger, Ledger> pair : bothPops) {
-            if (pair.getKey().getError() > pair.getValue().getError())
+            if (pair.getKey().getError() < pair.getValue().getError())
                 population.add(pair.getKey());
             else population.add(pair.getValue());
         }
