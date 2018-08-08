@@ -6,17 +6,17 @@ import java.util.List;
 import java.util.Random;
 
 public class DE {
-    private double scalingFactor = 0.5, crossoverRate = 0.5;
+    private double scalingFactor = 0.1, crossoverRate = 0.5;
 
     private List<Ledger> population;
     private int populationSize = 100;
     private Validator validator;
     private SimulationManager simulationManager;
 
-    public DE(Ledger ledger, Validator validator) {
+    public DE(Ledger ledger, Validator validator, SimulationManager simulationManager) {
         population = new ArrayList<>();
         this.validator = validator;
-        this.simulationManager = new SimulationManager();
+        this.simulationManager = simulationManager;
         for (int i = 0; i < populationSize; i++) {
             population.add(ledger.createVariationClone());
         }
