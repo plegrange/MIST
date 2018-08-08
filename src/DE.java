@@ -14,7 +14,19 @@ public class DE {
         }
     }
 
-    public void evolve(int generations){
+    public void evolve(int generations) {
+
+    }
+
+    private Ledger mutate(Ledger parent, Ledger a, Ledger b) {
+
+    }
+
+    private Ledger select(Ledger... ledgers) {
+        Ledger selected =
+    }
+
+    private Ledger crossover(Ledger parent, Ledger trial) {
 
     }
 }
