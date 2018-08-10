@@ -7,7 +7,7 @@ public class Station {
     public String status;
     public double upChance, cycleTime, meanRepairTime;
     public int bufferLevel, bufferCapacity;
-    public double globalTimeStep;
+    public int globalTimeStep;
     private double timeInCurrentState;
     private List<Station> previousStations;
 
@@ -29,7 +29,7 @@ public class Station {
         this.status = entry.status;
         this.upChance = entry.upChance;
         this.bufferLevel = entry.bufferLevel;
-        this.globalTimeStep = 0.0;
+        this.globalTimeStep = 0;
         this.cycleTime = entry.cycleTime;
         this.meanRepairTime = entry.meanRepairTime;
         for (Station s : previousStations) {
@@ -63,9 +63,16 @@ public class Station {
             case "BLOCKED":
                 blocked();
                 break;
+            case "FORCED":
+                forced();
+                break;
             default:
                 break;
         }
+    }
+
+    private void forced() {
+        return;
     }
 
     private void work() {
