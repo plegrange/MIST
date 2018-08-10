@@ -12,10 +12,22 @@ public class Ledger {
     }
 
     public void addEntry(String stationID, String status, double upChance, int bufferLevel, int bufferCapacity, double cycleTime, double meanRepairTime, int timeStep) {
-        entries.add(new Pair<>(stationID, new Entry(stationID,status, upChance, bufferLevel, bufferCapacity, cycleTime, meanRepairTime, timeStep)));
+        entries.add(new Pair<>(stationID, new Entry(stationID, status, upChance, bufferLevel, bufferCapacity, cycleTime, meanRepairTime, timeStep)));
     }
 
-    public int getTimestep(){
+    public Ledger cloneAndForceLedger(int entryIndex) {
+        Ledger newLedger = new Ledger();
+        Entry entry = null;
+        for (int i = 0; i < entries.size(); i++) {
+            entry = entries.get(i).getValue();
+            if (i == entryIndex)
+                newLedger.addEntry(entry.stationID, entry.cloneEntryForced());
+            else newLedger.addEntry(entry.stationID, entry.cloneEntryPure());
+        }
+        return newLedger;
+    }
+
+    public int getTimeStep() {
         return entries.get(0).getValue().timeStep;
     }
 

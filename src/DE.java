@@ -36,6 +36,18 @@ public class DE {
         }
     }
 
+    public Ledger selectFittestLedger() {
+        Ledger fittest = null;
+        double smallestError = 9999;
+        for (Ledger ledger : population) {
+            if (ledger.getError() < smallestError) {
+                smallestError = ledger.getError();
+                fittest = ledger;
+            }
+        }
+        return fittest;
+    }
+
     private void selectNewPop(List<Pair<Ledger, Ledger>> bothPops) {
         population = new ArrayList<>();
         for (Pair<Ledger, Ledger> pair : bothPops) {

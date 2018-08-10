@@ -15,4 +15,12 @@ public class Entry {
         this.meanRepairTime = meanRepairTime;
         this.timeStep = timeStep;
     }
+
+    public Entry cloneEntryPure() {
+        return new Entry(this.stationID, this.status, this.upChance, this.bufferLevel, this.bufferCapacity, this.cycleTime, this.meanRepairTime, this.timeStep);
+    }
+
+    public Entry cloneEntryForced() {
+        return new Entry(this.stationID, "FORCED", this.upChance, this.bufferLevel, this.bufferCapacity, this.cycleTime, this.meanRepairTime, this.timeStep);
+    }
 }

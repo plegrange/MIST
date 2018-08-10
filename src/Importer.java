@@ -63,7 +63,7 @@ public class Importer {
             }
             if (logbook == null) {
                 logbook = new Logbook(newLedger);
-            } else logbook.addLedger(newLedger.getTimestep(), newLedger);
+            } else logbook.addLedger(newLedger.getTimeStep(), newLedger);
         }
         return logbook;
     }
