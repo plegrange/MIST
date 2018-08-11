@@ -7,8 +7,8 @@ import java.util.List;
 public class SimulationManager {
     private Line line;
     private Ledger stateLedger;
-    private double secondsToSim = 10000.0;
-    private double timeIncrement = 1.0;
+    private int secondsToSim = 3600;
+    private int timeIncrement = 1;
 
     public SimulationManager() {
         createLine();

@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Station {
-    private double timeIncrement;
+    private int timeIncrement;
     public final String ID;
     public String status;
     public double upChance, cycleTime, meanRepairTime;
@@ -11,7 +11,7 @@ public class Station {
     private double timeInCurrentState;
     private List<Station> previousStations;
 
-    public Station(String ID, double timeIncrement) {
+    public Station(String ID, int timeIncrement) {
         this.ID = ID;
         this.previousStations = new ArrayList<>();
         this.timeIncrement = timeIncrement;
