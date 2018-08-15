@@ -1,3 +1,5 @@
+import javafx.util.Pair;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -45,10 +47,11 @@ public class Importer {
     private Logbook buildLogbook() {
         Ledger initialStateLedger = buildInitialStateLedger();
         Ledger liveLedger = initialStateLedger.clonePure();
-        liveLedger.updateEntry(getNextEntry());
+        Entry nextEntry = getNextEntry();
+        liveLedger.updateEntry(new Pair<>(nextEntry.stationID, nextEntry));
     }
 
-    private Entry getNextEntry(){
+    private Entry getNextEntry() {
         return entries.remove(0);
     }
 
