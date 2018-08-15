@@ -47,8 +47,16 @@ public class Importer {
     private Logbook buildLogbook() {
         Ledger initialStateLedger = buildInitialStateLedger();
         Ledger liveLedger = initialStateLedger.clonePure();
-        Entry nextEntry = getNextEntry();
-        liveLedger.updateEntry(new Pair<>(nextEntry.stationID, nextEntry));
+        Logbook logbook = new Logbook(initialStateLedger);
+        Entry nextEntry;
+        int timeStamp = 1;
+        while (entries.size() > 0) {
+            nextEntry = getNextEntry();
+            liveLedger.updateEntry(new Pair<>(nextEntry.stationID, nextEntry));
+            logbook.addLedger(timeStamp, liveLedger.clonePure());
+            timeStamp++;
+        }
+        return logbook;
     }
 
     private Entry getNextEntry() {
