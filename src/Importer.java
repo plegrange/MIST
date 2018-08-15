@@ -6,12 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Importer {
+    private List<Entry> entries;
 
     public Logbook importRealDataToLogbook(String path) {
         BufferedReader br = null;
         String line = "";
         String splitBy = ",";
-        List<Entry> entries = new ArrayList<>();
+        entries = new ArrayList<>();
         try {
             br = new BufferedReader(new FileReader(path));
             while ((line = br.readLine()) != null) {
@@ -38,33 +39,51 @@ public class Importer {
                 }
             }
         }
-        return buildLogbook(entries);
+        return buildLogbook();
     }
 
-    private Logbook buildLogbook(List<Entry> entries) {
-        Ledger newLedger;
-        Logbook logbook = null;
-        Entry entry = null;
-        boolean[] entryPositions;
-        while (entries.size() > 0) {
-            entry = entries.get(0);
-            newLedger = new Ledger();
-            entryPositions = new boolean[entries.size()];
-            for (int i = 1; i < entries.size(); i++) {
-                if (entries.get(i).timeStep == entry.timeStep) {
-                    entryPositions[i] = true;
-                }
-            }
-            for (int i = entries.size() - 1; i >= 0; i--) {
-                if (entryPositions[i]) {
-                    Entry temp = entries.remove(i);
-                    newLedger.addEntry(temp.stationID, temp);
-                }
-            }
-            if (logbook == null) {
-                logbook = new Logbook(newLedger);
-            } else logbook.addLedger(newLedger.getTimeStep(), newLedger);
+    private Logbook buildLogbook() {
+        Ledger initialStateLedger = buildInitialStateLedger();
+        Ledger liveLedger = initialStateLedger.clonePure();
+        liveLedger.updateEntry(getNextEntry());
+    }
+
+    private Entry getNextEntry(){
+        return entries.remove(0);
+    }
+
+    private Ledger buildInitialStateLedger() {
+        Ledger initialStateLedger = new Ledger();
+        List<String> listOfStationIDs = getListOfStationIDs();
+        for (int i = 0; i < listOfStationIDs.size(); i++) {
+            initialStateLedger.addEntry(getFirstOccurrence(listOfStationIDs.get(i)));
         }
-        return logbook;
+        return initialStateLedger;
+    }
+
+    private Entry getFirstOccurrence(String stationID) {
+        for (int i = 0; i < entries.size(); i++) {
+            if (entries.get(i).stationID.equals(stationID)) {
+                return entries.remove(i);
+            }
+        }
+        return null;
+    }
+
+    private List<String> getListOfStationIDs() {
+        List<String> stationIDs = new ArrayList<>();
+        boolean found;
+        for (int i = 0; i < entries.size(); i++) {
+            found = false;
+            for (int j = 0; j < stationIDs.size(); j++) {
+                if (stationIDs.get(j).equals(entries.get(i).stationID)) {
+                    found = true;
+                }
+            }
+            if (!found) {
+                stationIDs.add(entries.get(i).stationID);
+            }
+        }
+        return stationIDs;
     }
 }

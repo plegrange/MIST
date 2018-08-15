@@ -11,6 +11,10 @@ public class Ledger {
         entries = new ArrayList<>();
     }
 
+    public Ledger(List<Pair<String, Entry>> entries) {
+        this.entries = entries;
+    }
+
     public void addEntry(String stationID, String status, double upChance, int bufferLevel, int bufferCapacity, double cycleTime, double meanRepairTime, int timeStep) {
         entries.add(new Pair<>(stationID, new Entry(stationID, status, upChance, bufferLevel, bufferCapacity, cycleTime, meanRepairTime, timeStep)));
     }
@@ -27,8 +31,29 @@ public class Ledger {
         return newLedger;
     }
 
+    public Ledger clonePure() {
+        return new Ledger(this.entries);
+    }
+
+    public boolean containsEntry(Entry entry) {
+        for (Pair<String, Entry> entryPair : entries) {
+            if (entryPair.getValue().equals(entry))
+                return true;
+        }
+        return false;
+    }
+
     public int getTimeStep() {
         return entries.get(0).getValue().timeStep;
+    }
+
+    public void updateEntry(Pair<String, Entry> entryPair) {
+        for (Pair<String, Entry> e : entries) {
+            if (e.getKey().equals(entryPair.getKey())) {
+                e.getValue().replaceEntry(entryPair.getValue());
+                return;
+            }
+        }
     }
 
     public double getError(Ledger other) {
@@ -50,6 +75,10 @@ public class Ledger {
 
     public void addEntry(String stationID, Entry entry) {
         entries.add(new Pair<>(stationID, entry));
+    }
+
+    public void addEntry(Entry entry) {
+        entries.add(new Pair<>(entry.stationID, entry));
     }
 
     public List<Pair<String, Entry>> getEntries() {

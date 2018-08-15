@@ -23,4 +23,10 @@ public class Entry {
     public Entry cloneEntryForced() {
         return new Entry(this.stationID, "FORCED", this.upChance, this.bufferLevel, this.bufferCapacity, this.cycleTime, this.meanRepairTime, this.timeStep);
     }
+
+    public void replaceEntry(Entry entry) {
+        this.status = entry.status;
+        this.bufferLevel = entry.bufferLevel;
+        this.timeStep = entry.timeStep;
+    }
 }
