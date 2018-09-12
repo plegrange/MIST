@@ -19,6 +19,21 @@ public class Ledger {
         entries.add(new Pair<>(stationID, new Entry(stationID, status, upChance, bufferLevel, bufferCapacity, cycleTime, meanRepairTime, timeStep)));
     }
 
+    public String[][] getLedgerAsTable() {
+        String[][] table = new String[entries.size()][8];
+        for (int row = 0; row < entries.size(); row++) {
+            table[row][0] = entries.get(row).getValue().stationID;
+            table[row][1] = String.valueOf(entries.get(row).getValue().timeStep);
+            table[row][2] = entries.get(row).getValue().status;
+            table[row][3] = String.valueOf(entries.get(row).getValue().upChance);
+            table[row][4] = String.valueOf(entries.get(row).getValue().bufferLevel);
+            table[row][5] = String.valueOf(entries.get(row).getValue().bufferCapacity);
+            table[row][6] = String.valueOf(entries.get(row).getValue().cycleTime);
+            table[row][7] = String.valueOf(entries.get(row).getValue().meanRepairTime);
+        }
+        return table;
+    }
+
     public Ledger cloneAndForceLedger(int entryIndex) {
         Ledger newLedger = new Ledger();
         Entry entry = null;

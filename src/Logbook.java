@@ -33,6 +33,14 @@ public class Logbook {
         return null;
     }
 
+    public List<Pair<Integer, String[][]>> getLogbookAsTables() {
+        List<Pair<Integer, String[][]>> logbookTables = new ArrayList<>();
+        for (Pair<Integer, Ledger> pair : ledgers) {
+            logbookTables.add(new Pair<>(pair.getKey(), pair.getValue().getLedgerAsTable()));
+        }
+        return logbookTables;
+    }
+
     public List<Pair<Integer, Ledger>> getLedgers() {
         return ledgers;
     }
